@@ -1,18 +1,19 @@
 <!DOCTYPE html>
 <html>
+
 <head>
   <link rel="stylesheet" href="style.css" type="text/css">
   <title>podio</title>
 </head>
 
 <body>
-  <div class = "topbar">
+  <div class="topbar">
   </div>
 
-  <div class = "spicy">
+  <div class="spicy">
     <h1>welcome to <em>asian pear</em></h1>
   </div>
-  <p class ="intro"> hey mamas join khws from 9-10 every wednesday @ mixlr.com/khws </p>
+  <p class="intro"> hey mamas join khws from 9-10 every wednesday @ mixlr.com/khws </p>
   <p> things we <strong>excel</strong> at</p>
   <ul>
     <li> having meaningful conversations</li>
@@ -20,207 +21,209 @@
     <li> preparing our setlists really early in advance </li>
   </ul>
 
-  <div class = "box2"> probably a description!</div>
-  <div class = "buttons">
-    <div class = "box1"> button 1</div>
-    <div class = "box1"> button 2</div>
-    <div class = "box1"> button 3?</div>
+  <div class="box2"> probably a description!</div>
+  <div class="buttons">
+    <div class="box1"> button 1</div>
+    <div class="box1"> button 2</div>
+    <div class="box1"> button 3?</div>
   </div>
 
-  <div class = "simon">
-    <button class = "start" id ="start">START GAME</button>
-    <h3 class = "highscore" id = "highscore">high score:  </h3>
+  <div class="simon">
+    <button class="start" id="start">START GAME</button>
+    <h3 class="highscore" id="highscore">high score: </h3>
     <br>
-    <button class = "b1" id = "b1">button1</button>
-    <button class = "b2" id = "b2">button2</button>
+    <button class="b1" id="b1">button1</button>
+    <button class="b2" id="b2">button2</button>
     <br>
-    <button class = "b3" id = "b3">button3</button>
-    <button class = "b4" id = "b4">button4</button>
+    <button class="b3" id="b3">button3</button>
+    <button class="b4" id="b4">button4</button>
   </div>
 </body>
 
 <script>
+  if (window.localStorage.getItem("myHighScore") == null) {
+    window.localStorage.setItem("myHighScore", 0);
+  }
 
-if(window.localStorage.getItem("myHighScore") == null){
-  window.localStorage.setItem("myHighScore", 0);
-}
+  document.getElementById('highscore').innerHTML = "high score: " + window.localStorage.getItem("myHighScore");
 
-document.getElementById('highscore').innerHTML = "high score: " + window.localStorage.getItem("myHighScore");
-function chooseRandom(){
-  var random =  Math.floor(Math.random() * (4) + 1);
-  var classString = "b" + random;
-  return classString;
-}
+  document.getElementById("start").addEventListener("click", function() {
+    simonGame.runGame();
+  });
 
-function highlightClick(buttonid){
-  var buttonClicked = document.getElementById(buttonid)
-  var currentClass = buttonClicked.classList.toString();
-  buttonClicked.classList.remove(currentClass);
-  var newColor = currentClass + "clicked";
-  buttonClicked.classList.add(newColor);
-}
+  let simonGame = {
 
-function unhighlightClick(buttonid){
-  var buttonClicked = document.getElementById(buttonid)
-  var currentClass = buttonClicked.classList.toString();
-  buttonClicked.classList.remove(currentClass);
-  buttonClicked.classList.add(currentClass.substring(0,2));
-}
+    chooseRandom: function() {
+      var random = Math.floor(Math.random() * (4) + 1);
+      var classString = "b" + random;
+      return classString;
+    },
 
+    highlightClick: function(buttonid) {
+      var buttonClicked = document.getElementById(buttonid)
+      var currentClass = buttonClicked.classList.toString();
+      buttonClicked.classList.remove(currentClass);
+      var newColor = currentClass + "clicked";
+      buttonClicked.classList.add(newColor);
+    },
 
-function clicked(chosenSquare){
-  highlightClick(chosenSquare);
-  setTimeout(() => {unhighlightClick(chosenSquare)}, 1000);
-}
+    unhighlightClick: function(buttonid) {
+      var buttonClicked = document.getElementById(buttonid)
+      var currentClass = buttonClicked.classList.toString();
+      buttonClicked.classList.remove(currentClass);
+      buttonClicked.classList.add(currentClass.substring(0, 2));
+    },
 
 
-function runGame(){
-  var level = 1;
-  console.log("Game started");
-  var hasNotLost = true;
-  var pattern = [];
-  var nextSquare = chooseRandom();
+    clicked: function(chosenSquare) {
+      this.highlightClick(chosenSquare);
+      setTimeout(() => {
+        this.unhighlightClick(chosenSquare)
+      }, 1000);
+    },
 
-  addtopattern(pattern, nextSquare);
-  clicked(nextSquare);
 
-  var patterncopy = Array.from(pattern);
 
-  document.getElementById("b1").addEventListener("click", (event)=>{
-    clicked("b1");
-    console.log("pattern = " + pattern);
-    console.log("patterncopy = " + patterncopy);
-
-    if("b1" == patterncopy[0]){
-
-      patterncopy.shift();
-      console.log("pattern after patterncopy shift == " + pattern);
-
-      if(patterncopy.length == 0){
-        level ++;
-        pattern = showpatterns(pattern);
-        patterncopy = Array.from(pattern);
-        console.log("nextpatterncopy  = " + patterncopy);
-        console.log("newpattern  = " + pattern);
-      }
-    }
-    else{
-      if(level > window.localStorage.getItem("myHighScore")){
-        window.localStorage.setItem("myHighScore", level);
-        document.getElementById('highscore').innerHTML = "high score: " + window.localStorage.getItem("myHighScore");
-
-      }
-      alert("wrong, game over haha you lost at level " + level );
-    }
-  })
-
-  document.getElementById("b2").addEventListener("click", (event)=>{
-    clicked("b2");
-    console.log("pattern = " + pattern);
-    console.log("patterncopy = " + patterncopy);
-    if("b2" == patterncopy[0]){
-
-      patterncopy.shift();
-      console.log("pattern after patterncopy shift == " + pattern);
-
-      if(patterncopy.length == 0){
-        level ++;
-        pattern = showpatterns(pattern);
-        patterncopy = Array.from(pattern);
-        console.log("nextpattern  = " + patterncopy);
-
-      }
-    }
-    else{
-      if(level > window.localStorage.getItem("myHighScore")){
-        window.localStorage.setItem("myHighScore", level);
-        document.getElementById('highscore').innerHTML = "high score: " + window.localStorage.getItem("myHighScore");
-      }
-      alert("wrong, game over haha you lost at level " + level );    }
-    })
-
-    document.getElementById("b3").addEventListener("click", (event)=>{
-      clicked("b3");
-      console.log("pattern = " + pattern);
-      console.log("patterncopy = " + patterncopy);
-      if("b3" == patterncopy[0]){
-
-        patterncopy.shift();
-        console.log("pattern after patterncopy shift == " + pattern);
-        if(patterncopy.length == 0){
-          level ++;
-          pattern = showpatterns(pattern);
-          patterncopy = Array.from(pattern);
-          console.log("nextpattern  = " + patterncopy);
-
+    showpatterns: function(pattern) {
+      console.log("pattern for show pattern: = " + pattern); //currenlty pattern is not keeping track of the old move
+      var counter = 0;
+      var myInterval = setInterval(() => {
+        this.clicked(pattern[counter]);
+        counter++;
+        if (counter == pattern.length) {
+          clearInterval(myInterval);
+          //clicked(nextRandom);
         }
-      }
-      else{
-        if(level > window.localStorage.getItem("myHighScore")){
-          window.localStorage.setItem("myHighScore", level);
-          document.getElementById('highscore').innerHTML = "high score: " + window.localStorage.getItem("myHighScore");
-        }
-        alert("wrong, game over haha you lost at level " + level );    }
-      })
+      }, 1500);
+      var nextRandom = this.chooseRandom();
 
-      document.getElementById("b4").addEventListener("click", (event)=>{
-        clicked("b4");
+      this.addtopattern(pattern, nextRandom);
+      return pattern; //say pattern = showpatterns(pattern)
+    },
+
+    addtopattern: function(pattern, push) {
+      pattern.push(push);
+      console.log("adding " + push + " to array");
+      console.log("the array is now = " + pattern);
+    },
+
+    runGame: function() {
+      var level = 1;
+      console.log("Game started");
+      var hasNotLost = true;
+      var pattern = [];
+      var nextSquare = this.chooseRandom();
+
+      this.addtopattern(pattern, nextSquare);
+      this.clicked(nextSquare);
+
+      var patterncopy = Array.from(pattern);
+
+      document.getElementById("b1").addEventListener("click", (event) => {
+        this.clicked("b1");
         console.log("pattern = " + pattern);
         console.log("patterncopy = " + patterncopy);
-        if("b4" == patterncopy[0]){
+
+        if ("b1" == patterncopy[0]) {
 
           patterncopy.shift();
           console.log("pattern after patterncopy shift == " + pattern);
 
-          if(patterncopy.length == 0){
-            level ++;
-            pattern = showpatterns(pattern);
+          if (patterncopy.length == 0) {
+            level++;
+            pattern = this.showpatterns(pattern);
+            patterncopy = Array.from(pattern);
+            console.log("nextpatterncopy  = " + patterncopy);
+            console.log("newpattern  = " + pattern);
+          }
+        } else {
+          if (level > window.localStorage.getItem("myHighScore")) {
+            window.localStorage.setItem("myHighScore", level);
+            document.getElementById('highscore').innerHTML = "high score: " + window.localStorage.getItem("myHighScore");
+
+          }
+          alert("wrong, game over haha you lost at level " + level);
+        }
+      })
+
+      document.getElementById("b2").addEventListener("click", (event) => {
+        this.clicked("b2");
+        console.log("pattern = " + pattern);
+        console.log("patterncopy = " + patterncopy);
+        if ("b2" == patterncopy[0]) {
+
+          patterncopy.shift();
+          console.log("pattern after patterncopy shift == " + pattern);
+
+          if (patterncopy.length == 0) {
+            level++;
+            pattern = this.showpatterns(pattern);
             patterncopy = Array.from(pattern);
             console.log("nextpattern  = " + patterncopy);
 
           }
-        }
-        else{
-          if(level > window.localStorage.getItem("myHighScore")){
+        } else {
+          if (level > window.localStorage.getItem("myHighScore")) {
             window.localStorage.setItem("myHighScore", level);
             document.getElementById('highscore').innerHTML = "high score: " + window.localStorage.getItem("myHighScore");
           }
-          alert("wrong, game over haha you lost at level " + level );    }
-        })
+          alert("wrong, game over haha you lost at level " + level);
+        }
+      })
 
-      }
-      //if guesses wrong pattern then webtesthonorstopicsrhea
+      document.getElementById("b3").addEventListener("click", (event) => {
+        this.clicked("b3");
+        console.log("pattern = " + pattern);
+        console.log("patterncopy = " + patterncopy);
+        if ("b3" == patterncopy[0]) {
 
+          patterncopy.shift();
+          console.log("pattern after patterncopy shift == " + pattern);
+          if (patterncopy.length == 0) {
+            level++;
+            pattern = this.showpatterns(pattern);
+            patterncopy = Array.from(pattern);
+            console.log("nextpattern  = " + patterncopy);
 
-      function showpatterns(pattern){
-        console.log("pattern for show pattern: = " + pattern);//currenlty pattern is not keeping track of the old move
-        var counter = 0;
-        var myInterval =  setInterval(() => {clicked(pattern[counter]); counter ++;
-          if(counter == pattern.length){
-            clearInterval(myInterval);
+          }
+        } else {
+          if (level > window.localStorage.getItem("myHighScore")) {
+            window.localStorage.setItem("myHighScore", level);
+            document.getElementById('highscore').innerHTML = "high score: " + window.localStorage.getItem("myHighScore");
+          }
+          alert("wrong, game over haha you lost at level " + level);
+        }
+      })
 
-            //clicked(nextRandom);
-          }}, 1500);
-        var nextRandom = chooseRandom();
+      document.getElementById("b4").addEventListener("click", (event) => {
+        this.clicked("b4");
+        console.log("pattern = " + pattern);
+        console.log("patterncopy = " + patterncopy);
+        if ("b4" == patterncopy[0]) {
 
+          patterncopy.shift();
+          console.log("pattern after patterncopy shift == " + pattern);
 
+          if (patterncopy.length == 0) {
+            level++;
+            pattern = this.showpatterns(pattern);
+            patterncopy = Array.from(pattern);
+            console.log("nextpattern  = " + patterncopy);
 
+          }
+        } else {
+          if (level > window.localStorage.getItem("myHighScore")) {
+            window.localStorage.setItem("myHighScore", level);
+            document.getElementById('highscore').innerHTML = "high score: " + window.localStorage.getItem("myHighScore");
+          }
+          alert("wrong, game over haha you lost at level " + level);
+        }
+      })
 
+    }
+    //if guesses wrong pattern then webtesthonorstopicsrhea
 
-        addtopattern(pattern, nextRandom);
-        return pattern;//say pattern = showpatterns(pattern)
-      }
+  }
+</script>
 
-      function addtopattern(pattern, push){
-        pattern.push(push);
-        console.log("adding " + push + " to array");
-        console.log("the array is now = " + pattern);
-      }
-
-      document.getElementById("start").addEventListener("click", function(){
-        runGame();
-      });
-
-      </script>
-
-      </html>
+</html>
